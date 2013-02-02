@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>global page</title>
+<script type="text/javascript">
+	safari.application.addEventListener("command", searchWord, false);
+	safari.application.addEventListener("contextmenu", handleContextMenu, false);
+
+	function handleContextMenu(event){
+		console.log("entry-- global:handleContextMenu");
+	    // The passed in event is a SafariExtensionContextMenuEvent.
+	    // Retrieve the userInfo associated with this context menu event.  It should be
+	    // set to an object that contains the right-clicked element's tag name.  Add the 
+	    // context menu item only if an image is right-clicked.
+	    
+	    if(event.userInfo){
+	    	console.log("event.userInfo.tagName: "+event.userInfo.tagName);
+	    }else{
+	    	console.log("event.userInfo: "+event.userInfo);
+	    }	
+
+	    console.log("event.target.tagName is "+event.target.tagName);
+		if (event.target.tagName === "VIDEO" || event.target.tagName === "IMG") {
+			event.preventDefault();
+		}
+	}
+
+	function searchWord(event){
+		console.log("entry-- global:searchWord");
+		if (event.command !== "searchWord") {
+			return;
+    	}
+    	// We expect the user info for this event to contain the timestamp property.
+    	if (!event.userInfo || !event.userInfo.timestamp)
+        	return;
+        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage("searchWord", event.userInfo.timestamp);
+	}
+</script>
+</head>
+<body> </body>
+</html>

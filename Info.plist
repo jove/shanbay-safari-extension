@@ -17,11 +17,28 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>Chrome</key>
-	<dict/>
+	<dict>
+		<key>Context Menu Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>searchWord</string>
+				<key>Title</key>
+				<string>扇贝查词</string>
+			</dict>
+		</array>
+		<key>Global Page</key>
+		<string>global.html</string>
+	</dict>
 	<key>Content</key>
 	<dict>
 		<key>Scripts</key>
-		<dict/>
+		<dict>
+			<key>Start</key>
+			<array>
+				<string>content.js</string>
+			</array>
+		</dict>
 	</dict>
 	<key>Description</key>
 	<string>扇贝Safari助手</string>
@@ -31,15 +48,13 @@
 	<dict>
 		<key>Website Access</key>
 		<dict>
-			<key>Allowed Domains</key>
-			<array>
-				<string>*.shanbay.com</string>
-			</array>
+			<key>Include Secure Pages</key>
+			<true/>
 			<key>Level</key>
-			<string>Some</string>
+			<string>All</string>
 		</dict>
 	</dict>
 	<key>Website</key>
-	<string>http://twitter.com/jove</string>
+	<string>http://weibo.com/jovezhong</string>
 </dict>
 </plist>
