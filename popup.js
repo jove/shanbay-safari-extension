@@ -37,7 +37,10 @@ function loggedIn(nick_name) {
     var user_link = document.createElement('a');
     var user_home = 'http://www.shanbay.com/home/';
     user_link.setAttribute('href', user_home);
-    user_link.setAttribute('target', '_newtab');
+    //user_link.setAttribute('target', '_newtab');
+    user_link.onclick = function(){
+        safari.application.activeBrowserWindow.openTab().url = user_home;
+    }
     user_link.appendChild(document.createTextNode(nick_name + '的空间'));
     clearArea('status');
     status.appendChild(user_link);
@@ -49,7 +52,10 @@ function loggedOut() {
     var login_link = document.createElement('a');
     var login_url = 'http://www.shanbay.com/accounts/login/';
     login_link.setAttribute('href', login_url);
-    login_link.setAttribute('target', '_newtab');
+    login_link.onclick = function(){
+        safari.application.activeBrowserWindow.openTab().url = login_url;
+    }
+    //login_link.setAttribute('target', '_newtab');
     login_link.appendChild(document.createTextNode('登录'));
     clearArea('status');
     status.appendChild(login_link);
@@ -99,16 +105,19 @@ function addWord() {
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
             var learning_id = JSON.parse(request.responseText).id;
-	    clearArea('jump');
+            clearArea('jump');
             jump.appendChild(document.createTextNode('已添加，'));
             var check_link = 'http://www.shanbay.com/learning/';
             var check = document.createElement('a');
-	    check.setAttribute('id', 'jump_a');
+            check.setAttribute('id', 'jump_a');
             check.setAttribute('href', check_link + learning_id);
-            check.setAttribute('target', '_newtab');
+            //check.setAttribute('target', '_newtab');
+            check.onclick=function(){
+                safari.application.activeBrowserWindow.openTab().url = check_link + learning_id;
+            }
             check.appendChild(document.createTextNode('查看'));
             jump.appendChild(check);
-	    document.getElementById('input').focus();
+            document.getElementById('input').focus();
         }
     };
     request.send(null);
