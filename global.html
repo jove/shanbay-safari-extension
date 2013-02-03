@@ -33,7 +33,50 @@
     	// We expect the user info for this event to contain the timestamp property.
     	if (!event.userInfo || !event.userInfo.timestamp)
         	return;
-        safari.application.activeBrowserWindow.activeTab.page.dispatchMessage("searchWord", event.userInfo.timestamp);
+        console.log("global: the selected word is "+event.userInfo.word);
+
+        var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open('GET', 'http://www.shanbay.com/api/word/'+event.userInfo.word);
+		xmlhttp.onreadystatechange = handleServerResponse;
+		//xmlhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xmlhttp.send(null);
+
+		function handleServerResponse() {    
+		    if (xmlhttp.readyState == 4) {
+		        //alert(xmlhttp.getAllResponseHeaders());
+		        if (xmlhttp.status == 200) {
+		        	var response = JSON.parse(xmlhttp.responseText);
+		        	if (response.voc != ''){
+		        		safari.extension.popovers[0].contentWindow.queryOk(response);
+		        	}else{
+		        		safari.extension.popovers[0].contentWindow.queryNotFound(event.userInfo.word);
+		        	}
+		            //alert("got json: "+xmlhttp.responseText);
+		            //event.userInfo.responseText=xmlhttp.responseText;
+		            
+		            safari.extension.toolbarItems[0].showPopover();
+		            //safari.application.activeBrowserWindow.activeTab.page.dispatchMessage("searchWord", event.userInfo);
+		        } else {
+		            alert("error");
+		        }
+		    } 
+		}
+/*
+    var request = new XMLHttpRequest();
+    var query_url = 'http://www.shanbay.com/api/word/' + word;
+    request.open('GET', query_url);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            var response = JSON.parse(request.responseText);
+            if (response.voc != '')
+                queryOk(response);
+            else
+                queryNotFound(word);
+        }
+    }
+    request.send(null);
+*/
+        
 	}
 </script>
 </head>

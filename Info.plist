@@ -29,6 +29,28 @@
 		</array>
 		<key>Global Page</key>
 		<string>global.html</string>
+		<key>Popovers</key>
+		<array>
+			<dict>
+				<key>Filename</key>
+				<string>popup.html</string>
+				<key>Identifier</key>
+				<string>shanBayPopover</string>
+			</dict>
+		</array>
+		<key>Toolbar Items</key>
+		<array>
+			<dict>
+				<key>Identifier</key>
+				<string>shanbayToolbar</string>
+				<key>Image</key>
+				<string>icon48.png</string>
+				<key>Label</key>
+				<string>扇贝</string>
+				<key>Popover</key>
+				<string>shanBayPopover</string>
+			</dict>
+		</array>
 	</dict>
 	<key>Content</key>
 	<dict>
