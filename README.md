@@ -1,4 +1,4 @@
-# Safari extension for Apple Safari on Mac OS X
+# Safari extension for Shanbay.com
 
 ## 基本介绍
 这是一款基于 [扇贝网API](http://www.shanbay.com/support/dev/api.html) 的Safari扩展。
