@@ -212,15 +212,34 @@ function query(word) {
     showTips('查询中...');
     clearArea('jump');
     clearArea('definition');
+    //Jove at Feb 14:  about to do stemming in a trick way
+    //First, send request to http://www.shanbay.com/bdc/search/word/?word=surveys
+    //Then get the "content" value, then send request to http://www.shanbay.com/api/word/survey
+
+    //enhancement: only search the first word even there are multiple words selected
+    word=word.split(' ')[0]
+
     var request = new XMLHttpRequest();
-    var query_url = 'http://www.shanbay.com/api/word/' + word;
+    var query_url = 'http://www.shanbay.com/bdc/search/word/?word=' + word;
     request.open('GET', query_url);
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
             var response = JSON.parse(request.responseText);
-            if (response.voc != '')
-                queryOk(response);
-            else
+            if (typeof response.content != 'undefined'){
+                    var realRequest = new XMLHttpRequest();
+                    realRequest.open('GET', 'http://www.shanbay.com/api/word/' + response.content);
+                    realRequest.onreadystatechange = function () {
+                        if (realRequest.readyState === 4) {
+                            var realResponse = JSON.parse(realRequest.responseText);
+                            if (typeof realResponse.voc != 'undefined'){
+                                queryOk(realResponse);
+                            }else{
+                                queryNotFound(word);
+                            }
+                        }
+                    }
+                    realRequest.send(null);
+            }else
                 queryNotFound(word);
         }
     }
