@@ -10,9 +10,9 @@
        <key>Developer Identifier</key>
        <string>82D4W4H36B</string>
        <key>CFBundleVersion</key>
-       <string>0.1</string>
+       <string>0.2</string>
        <key>CFBundleShortVersionString</key>
-       <string>0.1</string>
+       <string>0.2</string>
        <key>URL</key>
        <string>https://github.com/jove/shanbay-safari-extension/raw/master/shanbay-safari-extension.safariextz</string>
      </dict>
