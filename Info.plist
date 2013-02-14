@@ -79,6 +79,6 @@
 	<key>Update Manifest URL</key>
 	<string>https://github.com/jove/shanbay-safari-extension/raw/master/update.plist</string>
 	<key>Website</key>
-	<string>http://weibo.com/jovezhong</string>
+	<string>https://github.com/jove/shanbay-safari-extension</string>
 </dict>
 </plist>
