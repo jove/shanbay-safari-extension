@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Jove</string>
 	<key>Builder Version</key>
-	<string>8536.26.17</string>
+	<string>10600.4.10.7</string>
 	<key>CFBundleDisplayName</key>
 	<string>扇贝</string>
 	<key>CFBundleIdentifier</key>
@@ -13,9 +13,9 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.2</string>
+	<string>0.3</string>
 	<key>CFBundleVersion</key>
-	<string>0.2</string>
+	<string>0.3</string>
 	<key>Chrome</key>
 	<dict>
 		<key>Context Menu Items</key>
@@ -64,6 +64,8 @@
 	</dict>
 	<key>Description</key>
 	<string>扇贝Safari助手</string>
+	<key>DeveloperIdentifier</key>
+	<string>9J84E5CFM9</string>
 	<key>ExtensionInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>Permissions</key>
