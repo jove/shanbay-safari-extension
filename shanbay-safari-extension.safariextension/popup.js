@@ -99,24 +99,29 @@ function addWord() {
     var jump = document.getElementById('jump');
     var a = getFirstChildWithTagName(jump, 'a');
     var request = new XMLHttpRequest();
-    var add_url = 'http://www.shanbay.com/api/learning/add/' + a.title;
+    var word = a.title
+    var add_url = 'http://www.shanbay.com/api/learning/add/' + word;
     jump.innerHTML = '添加中...';
     request.open('GET', add_url);
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
             var learning_id = JSON.parse(request.responseText).id;
             clearArea('jump');
-            jump.appendChild(document.createTextNode('已添加，'));
-            var check_link = 'http://www.shanbay.com/learning/';
+            jump.appendChild(document.createTextNode('已添加'));
+            //TODO: for some reason,the current tab content is changed to popup.html, need FIXME
+            
+            /*
+            var check_link = 'http://www.shanbay.com/api/learning/examples/';
             var check = document.createElement('a');
             check.setAttribute('id', 'jump_a');
             check.setAttribute('href', check_link + learning_id);
-            //check.setAttribute('target', '_newtab');
+            check.setAttribute('target', '_newtab');
             check.onclick=function(){
                 safari.application.activeBrowserWindow.openTab().url = check_link + learning_id;
             }
             check.appendChild(document.createTextNode('查看'));
             jump.appendChild(check);
+            */
             document.getElementById('input').focus();
         }
     };
@@ -182,7 +187,7 @@ function queryOk(response) {
     // jump area
     var jump = document.getElementById('jump');
     if (learning_id != 0) {
-            var check_link = 'http://www.shanbay.com/learning/';
+            var check_link = 'http://www.shanbay.com/api/learning/examples/';
             var check = document.createElement('a');
             check.setAttribute('id', 'jump_a');
             check.setAttribute('href', check_link + learning_id);
@@ -197,6 +202,7 @@ function queryOk(response) {
         // let addWord function can access the word name by title name
         add.setAttribute('title', voc.content);
         add.appendChild(document.createTextNode('添加到生词本'));
+        add.addEventListener('click', addWord);
         jump.appendChild(add);
     }
 }
@@ -212,35 +218,21 @@ function query(word) {
     showTips('查询中...');
     clearArea('jump');
     clearArea('definition');
-    //Jove at Feb 14:  about to do stemming in a trick way
-    //First, send request to http://www.shanbay.com/bdc/search/word/?word=surveys
-    //Then get the "content" value, then send request to http://www.shanbay.com/api/word/survey
-
+    
     //enhancement: only search the first word even there are multiple words selected
     word=word.split(' ')[0]
 
     var request = new XMLHttpRequest();
-    var query_url = 'http://www.shanbay.com/bdc/search/word/?word=' + word;
+    var query_url = 'http://www.shanbay.com/api/word/' + word;
     request.open('GET', query_url);
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
-            var response = JSON.parse(request.responseText);
-            if (typeof response.content != 'undefined'){
-                    var realRequest = new XMLHttpRequest();
-                    realRequest.open('GET', 'http://www.shanbay.com/api/word/' + response.content);
-                    realRequest.onreadystatechange = function () {
-                        if (realRequest.readyState === 4) {
-                            var realResponse = JSON.parse(realRequest.responseText);
+                            var realResponse = JSON.parse(request.responseText);
                             if (typeof realResponse.voc != 'undefined'){
                                 queryOk(realResponse);
                             }else{
                                 queryNotFound(word);
                             }
-                        }
-                    }
-                    realRequest.send(null);
-            }else
-                queryNotFound(word);
         }
     }
     request.send(null);
@@ -309,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
     checkLoginStatus();
     document.querySelector('button').addEventListener('click', click);
     document.querySelector('input').addEventListener('keydown', keydown);
-    document.querySelector('#jump').addEventListener('click', addWord);
+    
     document.querySelector('#sound').addEventListener('click', playSound);
     document.querySelector('#sound').addEventListener('mouseover', playSound);
 });

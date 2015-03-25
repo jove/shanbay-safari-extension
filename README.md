@@ -15,6 +15,13 @@
 * 扇贝网尚不支持短语和整句翻译
 * 有时候会打开一个新tab，显示popover里的内容。请直接关闭
 
+## 开发说明
+
+* 扇贝网开发者主页： <http://www.shanbay.com/developer/wiki/intro/>
+* 开发测试方案
+	* 推荐使用Mac OS X，使用Safari的Extension Builder。10.10之后需要开发者证书(抱歉我不能共享我的证书)
+	* git clone 此项目，然后在Extension Builder中打开shanbay-safari-extension.safariextension目录
+
 ## 致谢
 
 * 感谢扇贝网提供了极好的互动式英文学习工具和社区。你可以免费使用，并按实际需要获取付费资源
