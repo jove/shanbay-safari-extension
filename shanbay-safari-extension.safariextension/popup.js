@@ -50,7 +50,11 @@ function loggedIn(nick_name) {
 function loggedOut() {
     var status = document.getElementById('status');
     var login_link = document.createElement('a');
-    var login_url = 'http://www.shanbay.com/accounts/login/';
+    var redirect = 'https://api.shanbay.com/oauth2/auth/success/'
+    var clientID = 'c993515132fdae3fc768'
+    var oauthType = 'code' // code|token
+    var login_url = 'https://api.shanbay.com/oauth2/authorize/?client_id='+clientID
+        +'&response_type='+oauthType+'&redirect_uri='+encodeURIComponent(redirect);
     login_link.setAttribute('href', login_url);
     login_link.onclick = function(){
         safari.application.activeBrowserWindow.openTab().url = login_url;
