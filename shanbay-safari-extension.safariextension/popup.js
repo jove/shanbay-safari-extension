@@ -95,7 +95,7 @@ function checkLoginStatus() {
 }
 
 
-function addWord() {
+function addWord(evt) {
     var jump = document.getElementById('jump');
     var a = getFirstChildWithTagName(jump, 'a');
     var request = new XMLHttpRequest();
@@ -126,6 +126,7 @@ function addWord() {
         }
     };
     request.send(null);
+    evt.preventDefault();//disable the page navigation
 }
 
 
@@ -187,6 +188,7 @@ function queryOk(response) {
     // jump area
     var jump = document.getElementById('jump');
     if (learning_id != 0) {
+            /*暂时没有好的方法，显示这个刚learn的词
             var check_link = 'http://www.shanbay.com/api/learning/examples/';
             var check = document.createElement('a');
             check.setAttribute('id', 'jump_a');
@@ -194,8 +196,10 @@ function queryOk(response) {
             check.setAttribute('target', '_newtab');
             check.appendChild(document.createTextNode('查看'));
             jump.appendChild(check);
+            */
         }
     else {
+        //never learnt, can add to learning plan
         var add = document.createElement('a');
         add.setAttribute('id', 'jump_a');
         add.setAttribute('href', '#');
