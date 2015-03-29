@@ -37,13 +37,14 @@ function loggedIn(nick_name) {
     var user_link = document.createElement('a');
     var user_home = 'http://www.shanbay.com/home/';
     user_link.setAttribute('href', user_home);
-    //user_link.setAttribute('target', '_newtab');
     user_link.onclick = function(){
         safari.application.activeBrowserWindow.openTab().url = user_home;
     }
     user_link.appendChild(document.createTextNode(nick_name + '的空间'));
     clearArea('status');
     status.appendChild(user_link);
+    var search_area = document.getElementById('search_area');
+    search_area.setAttribute('class', 'visible');
 }
 
 
@@ -52,14 +53,16 @@ function loggedOut() {
     var login_link = document.createElement('a');
     var redirect = 'https://api.shanbay.com/oauth2/auth/success/'
     var clientID = 'c993515132fdae3fc768'
-    var oauthType = 'code' // code|token
+    var oauthType = 'token' // code|token
     var login_url = 'https://api.shanbay.com/oauth2/authorize/?client_id='+clientID
         +'&response_type='+oauthType+'&redirect_uri='+encodeURIComponent(redirect);
     login_link.setAttribute('href', login_url);
     login_link.onclick = function(){
-        safari.application.activeBrowserWindow.openTab().url = login_url;
+        safari.extension.popovers[0].hide()
+        var newTab=safari.application.activeBrowserWindow.openTab()
+        newTab.url = login_url;
+        newTab.addEventListener("beforeNavigate",beforeNavigateHandler,false)
     }
-    //login_link.setAttribute('target', '_newtab');
     login_link.appendChild(document.createTextNode('登录'));
     clearArea('status');
     status.appendChild(login_link);
@@ -69,29 +72,57 @@ function loggedOut() {
     showTips('请点击右上角链接登录，登录后才能查词');
 }
 
+function beforeNavigateHandler(evt){
+    var successPrefix='https://api.shanbay.com/oauth2/auth/success/#access_token='
+    var idx=evt.url.indexOf(successPrefix)
+    if(idx===0){
+        idx+=successPrefix.length
+        var endIdx=evt.url.indexOf('&',idx)
+        var token=evt.url.substring(idx,endIdx)
+        safari.extension.secureSettings.token = token
+        evt.preventDefault()
+        safari.application.activeBrowserWindow.activeTab.close()
+        alert('登录扇贝成功，现在可以用插件查词了')
+        //update UI
+        checkLoginStatus()
+    }
+}
+
+function tokenQueryString(){
+    return "access_token="+safari.extension.secureSettings.token
+}
 
 function checkLoginStatus() {
     // focus on input area
-    document.getElementById('input').focus();
+    //document.getElementById('input').focus();
     // status area
     var status = document.getElementById('status');
+    if(!(safari.extension.secureSettings.token)||safari.extension.secureSettings.token.length===0){
+        //no token yet
+        loggedOut()
+        return
+    }
+    // check status with token, got 401 HTTP status if the token invalid or expired
     status.innerHTML = '正在检查...';
     // tips area
-    showTips('提示：使用回车键搜索更快捷，点击选项可以自定义设置');
+    showTips('提示：使用回车键搜索更快捷');
     var request = new XMLHttpRequest();
-    var check_url = 'http://www.shanbay.com/api/user/info/';
+    var check_url = 'https://api.shanbay.com/account/?'+tokenQueryString();
     request.open('GET', check_url);
     request.onreadystatechange = function () {
-        if (request.readyState === 4) {
-            // user have logged in
-            if (request.getResponseHeader('Content-Type') == 'application/json') {
-                var response = JSON.parse(request.responseText);
-                var nick_name = response.nickname;
-                loggedIn(nick_name);
-            }
-            // user have not logged in
-            else {
-                loggedOut();
+        if (request.readyState === 4) {//DONE
+            switch(request.status){
+                case 401: loggedOut();break
+                case 429: alert("请求次数过多!");break
+                case 200:
+                    var response = JSON.parse(request.responseText);
+                    var nick_name = response.nickname;
+                    //other key: username,id,avatar
+                    loggedIn(nick_name);
+                    break
+                default:
+                    alert("Error")
+                    loggedOut()
             }
         }
     };
@@ -104,32 +135,29 @@ function addWord(evt) {
     var a = getFirstChildWithTagName(jump, 'a');
     var request = new XMLHttpRequest();
     var word = a.title
-    var add_url = 'http://www.shanbay.com/api/learning/add/' + word;
+    var add_url = 'https://api.shanbay.com/bdc/learning/'
     jump.innerHTML = '添加中...';
-    request.open('GET', add_url);
+    request.open('POST', add_url);
+    request.setRequestHeader("Authorization","Bearer "+safari.extension.secureSettings.token);
+    request.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
-            var learning_id = JSON.parse(request.responseText).id;
+            var learning_id = JSON.parse(request.responseText).data.id;
             clearArea('jump');
-            jump.appendChild(document.createTextNode('已添加'));
-            //TODO: for some reason,the current tab content is changed to popup.html, need FIXME
-            
-            /*
-            var check_link = 'http://www.shanbay.com/api/learning/examples/';
+            jump.appendChild(document.createTextNode('已添加 '));
+            var check_link = 'http://www.shanbay.com/review/learning/';
             var check = document.createElement('a');
             check.setAttribute('id', 'jump_a');
             check.setAttribute('href', check_link + learning_id);
-            check.setAttribute('target', '_newtab');
             check.onclick=function(){
                 safari.application.activeBrowserWindow.openTab().url = check_link + learning_id;
             }
             check.appendChild(document.createTextNode('查看'));
             jump.appendChild(check);
-            */
             document.getElementById('input').focus();
         }
     };
-    request.send(null);
+    request.send("id="+word);
     evt.preventDefault();//disable the page navigation
 }
 
@@ -159,18 +187,18 @@ function queryOk(response) {
     clearArea('definition');    
 
     var learning_id = response.learning_id;
-    var voc = response.voc;
+    var voc = response;
 
     // word and pronouncation
     var content = document.getElementById('content');
     content.innerHTML = voc.content + ' ';
-    if (voc.pron.length != 0) {
+    if (response.pronunciation.length != 0) {
 	   var pron = document.getElementById('pron');
 	   // if word too long, put pronouncation in the next line
-	   if (voc.content.length > 11)
-            pron.innerHTML = '<br />[' + voc.pron + ']';
+	   if (response.content.length > 11)
+            pron.innerHTML = '<br />[' + response.pronunciation + ']';
 	   else
-            pron.innerHTML = '[' + voc.pron + '] ';
+            pron.innerHTML = '[' + response.pronunciation + '] ';
     }
 
     // if audio is available
@@ -191,16 +219,16 @@ function queryOk(response) {
 
     // jump area
     var jump = document.getElementById('jump');
-    if (learning_id != 0) {
-            /*暂时没有好的方法，显示这个刚learn的词
-            var check_link = 'http://www.shanbay.com/api/learning/examples/';
+    if (learning_id) {
+            var check_link = 'http://www.shanbay.com/review/learning/';
             var check = document.createElement('a');
             check.setAttribute('id', 'jump_a');
             check.setAttribute('href', check_link + learning_id);
-            check.setAttribute('target', '_newtab');
             check.appendChild(document.createTextNode('查看'));
+            check.onclick=function(){
+                safari.application.activeBrowserWindow.openTab().url = check_link + learning_id;
+            }
             jump.appendChild(check);
-            */
         }
     else {
         //never learnt, can add to learning plan
@@ -208,7 +236,7 @@ function queryOk(response) {
         add.setAttribute('id', 'jump_a');
         add.setAttribute('href', '#');
         // let addWord function can access the word name by title name
-        add.setAttribute('title', voc.content);
+        add.setAttribute('title', voc.id);
         add.appendChild(document.createTextNode('添加到生词本'));
         add.addEventListener('click', addWord);
         jump.appendChild(add);
@@ -231,13 +259,13 @@ function query(word) {
     word=word.split(' ')[0]
 
     var request = new XMLHttpRequest();
-    var query_url = 'http://www.shanbay.com/api/word/' + word;
+    var query_url = 'https://api.shanbay.com/bdc/search/?word=' + word + "&"+tokenQueryString();
     request.open('GET', query_url);
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
                             var realResponse = JSON.parse(request.responseText);
-                            if (typeof realResponse.voc != 'undefined'){
-                                queryOk(realResponse);
+                            if (realResponse.status_code===0){
+                                queryOk(realResponse.data);
                             }else{
                                 queryNotFound(word);
                             }
