@@ -50,6 +50,9 @@ a:hover {
 .invisible {
     display: none;
 }
+.visible {
+    display: block;
+}
 
 
 /* definition area */
