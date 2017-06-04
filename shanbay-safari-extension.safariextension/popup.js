@@ -339,5 +339,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('input').addEventListener('keydown', keydown);
     
     document.querySelector('#sound').addEventListener('click', playSound);
-    document.querySelector('#sound').addEventListener('mouseover', playSound);
+    //fix issue#6, disable the mouseover sound play, otherwise it will be playied twice with single click
+    //document.querySelector('#sound').addEventListener('mouseover', playSound);
 });
