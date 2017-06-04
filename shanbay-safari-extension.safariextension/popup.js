@@ -82,7 +82,7 @@ function beforeNavigateHandler(evt){
         safari.extension.secureSettings.token = token
         evt.preventDefault()
         safari.application.activeBrowserWindow.activeTab.close()
-        alert('登录扇贝成功，现在可以用插件查词了')
+        alert('登录扇贝成功。请重新加载当前页面，选中单词右键选择“扇贝查词”')
         //update UI
         checkLoginStatus()
     }

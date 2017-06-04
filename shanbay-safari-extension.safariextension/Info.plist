@@ -5,7 +5,7 @@
 	<key>Author</key>
 	<string>Jove</string>
 	<key>Builder Version</key>
-	<string>10600.4.10.7</string>
+	<string>12603.2.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>扇贝</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.4.0</string>
+	<string>0.4.1</string>
 	<key>CFBundleVersion</key>
 	<string>0.4.0</string>
 	<key>Chrome</key>

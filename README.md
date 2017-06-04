@@ -8,7 +8,10 @@
 ## 安装说明
 请下载 [shanbay-safari-extension.safariextz](https://github.com/jove/shanbay-safari-extension/raw/master/shanbay-safari-extension.safariextz) 文件。并用Safari打开。系统会提示是否信任该扩展，点击确定。
 
-第一次使用该工具，请在弹出窗口登录，然后给予授权，之后此插件便可使用。30天免登录 (得益于OAuth)。
+Safari的Extensions界面会显示配置界面 OAuth Token:
+
+第一次使用该工具，不用管它
+打开一个网页，或重刷当前页面，在工具栏会有扇贝图标，点击它，在弹出窗口登录，然后给予授权，之后此插件便可使用。30天免登录 (得益于OAuth)。
 
 ## 已知问题
 
@@ -43,4 +46,5 @@
 * v0.3, Mar 25, 2015: 修复不能查词的问题
 * v0.3.1, Mar 26, 2015: 修复添加生词本会覆盖当前页面的问题
 * v0.4.0, Mar 29, 2015: 转用OAuth和扇贝新的API，现在可以查看新加单词的详细页面
+* v0.4.1, Jun 4, 2017: 重新捡起，修复单击读音会播放2次的问题 (取消mousehover读词)
 
