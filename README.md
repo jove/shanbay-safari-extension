@@ -10,7 +10,7 @@
 ![screenshot-word](https://static.splunk.io/shanbay-word.png)
 
 ## 安装说明
-请下载 [shanbay-safari-extension.safariextz](https://github.com/jove/shanbay-safari-extension/raw/master/shanbay-safari-extension.safariextz) 文件。并用Safari打开。系统会提示是否信任该扩展，点击确定。
+从2007年6月24起，您可以从[Safari Extensions官网](https://safari-extensions.apple.com/details/?id=com.jove.shanbaySafariExtension-9J84E5CFM9)下载并在新更新。
 
 Safari的Extensions界面会显示配置界面 OAuth Token:
 
